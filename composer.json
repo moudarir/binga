@@ -1,8 +1,8 @@
 {
   "name": "moudarir/binga",
-  "description": "Librairie permettant de faire des appels à l'API de Binga.ma par Wafacash",
+  "description": "PHP library for integration with the Binga.ma API in a fast and simple way.",
   "keywords": [
-    "wafacash",
+    "php",
     "binga",
     "SDK",
     "library"
