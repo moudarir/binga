@@ -4,6 +4,8 @@ namespace Moudarir\Binga;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Laravie\Parser\Xml\Reader;
+use Laravie\Parser\Xml\Document;
 
 class Binga {
 
@@ -53,6 +55,58 @@ class Binga {
     }
 
     /**
+     * getOrder()
+     *
+     * @param string $code
+     * @param array $params
+     * @return array
+     */
+    public function getOrder ($code, $params = []) {
+        $response = $this->request('GET', '/bingaApi/api/orders/'.$code, $params);
+
+        return $response;
+    }
+
+    /**
+     * getOrders()
+     *
+     * @param array $params
+     * @return array
+     */
+    public function getOrders ($params = []): array {
+        $response = $this->request('GET', '/bingaApi/api/orders/store/'.$this->storeId, $params);
+
+        return $response;
+    }
+
+    /**
+     * sendOrder()
+     *
+     * @param $orderData
+     * @param array $params
+     * @param string $type
+     * @param int $expireDays
+     * @return array
+     */
+    public function sendOrder ($orderData, $params = [], $type = 'pay', $expireDays = 7): array {
+        $orderData['amount'] = $this->getAmount($orderData['amount']);
+        $default        = [
+            'apiVersion'        => Statics::API_VERSION,
+            'expirationDate'    => $this->setExpirationDate($expireDays),
+            'storeId'           => $this->storeId,
+            'orderCheckSum'     => $this->generateCheckSum($type, $orderData)
+        ];
+        $dataBody       = array_merge($default, $orderData);
+        $params['form_params'] = $dataBody;
+        $requestUri     = $type === 'pay' ? Statics::PAY_URI : Statics::PREPAY_URI;
+        $response       = $this->request('POST', $requestUri, $params);
+
+        return $response;
+    }
+
+    /**
+     * request()
+     *
      * @param string $method GET | POST
      * @param string $uri
      * @param array $params
@@ -63,21 +117,12 @@ class Binga {
             $options    = $this->setOptions($this->username, $this->password, $params);
             $request    = $this->client->request($method, $uri, $options);
 
-            if ($request->getStatusCode() === 200) {
-                $formatted  = $this->formatContents($request);
-                $content    = $formatted['content'];
-                $response   = $this->checkContent($content);
+            $formatted  = $this->formatContents($request, $params);
+            $content    = $formatted['content'];
+            $response   = $this->checkContent($content);
 
-                if (!$response['error']) {
-                    $response['orders'] = $content->orders;
-                }
-
-            } else {
-                $response = [
-                    'error'     => true,
-                    'code'      => $request->getStatusCode(),
-                    'message'   => $request->getReasonPhrase()
-                ];
+            if (!$response['error']) {
+                $response['orders'] = $content->orders->order;
             }
         } catch (GuzzleException $e) {
             $response = [
@@ -95,23 +140,17 @@ class Binga {
      *
      * @param string $type
      * @param array $data
-     * @return string
+     * @return string|null
      */
-    public function generateCheckSum ($type, $data): string {
-        $checkSum = '';
+    private function generateCheckSum ($type, $data):? string {
+        $types = Statics::ORDER_TYPES;
 
-        switch ($type) {
-            case 'pre-pay':
-                $checkSum .= 'PRE-PAY';
-                break;
-            case 'pay':
-                $checkSum .= 'PAY';
-                break;
+        if (isset($types[$type])) {
+            $checkSum = $types[$type].$data['amount'].$this->storeId.$data['externalId'].$data['buyerEmail'].$this->privateKey;
+            return md5($checkSum);
         }
 
-        $checkSum .= $data['amount'].$this->storeId.$data['externalId'].$data['buyerEmail'].$this->privateKey;
-
-        return md5($checkSum);
+        return null;
     }
 
     /**
@@ -151,9 +190,7 @@ class Binga {
                 'Accept'    => 'application/json'
             ]
         ];
-
-        $options = !empty($params) ? array_merge($params, $default) : $default;
-
+        $options = !empty($params) ? array_merge($default, $params) : $default;
         return $options;
     }
 
@@ -161,23 +198,43 @@ class Binga {
      * formatContents()
      *
      * @param mixed|\Psr\Http\Message\ResponseInterface $request
+     * @param array $params
      * @return array
      */
-    private function formatContents ($request): array {
+    private function formatContents ($request, $params): array {
         $body   = $request->getBody();
         $format = $request->getHeader('Content-Type');
+
+        if (isset($params['stream']) && $params['stream'] === true) {
+            $contents = '';
+            while (!$body->eof() ) {
+                $contents .= $body->read(1024);
+            }
+            $body->close();
+        } else {
+            $contents = $body->getContents();
+        }
+
         if (!empty($format)) {
             if (in_array('application/json', $format)) {
                 return [
                     'type'      => 'json',
-                    'content'   => json_decode($body->getContents())
+                    'content'   => json_decode($contents)
+                ];
+            } elseif (in_array('application/xml', $format)) {
+                $parser = new Reader(new Document());
+                $xml    = $parser->extract($contents)->getOriginalContent();
+
+                return [
+                    'type'      => 'xml',
+                    'content'   => $xml
                 ];
             }
         }
 
         return [
-            'type'      => 'xml',
-            'content'   => $body->getContents()
+            'type'      => 'Unknown',
+            'content'   => ''
         ];
     }
 
@@ -201,6 +258,16 @@ class Binga {
         }
 
         return $response;
+    }
+
+    /**
+     * getAmount()
+     *
+     * @param float|int $amount
+     * @return string
+     */
+    private function getAmount ($amount) {
+        return bcadd(round($amount, 2), '0', 2);
     }
 
 }
