@@ -3,7 +3,7 @@
 # PHP Library for Binga.ma
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/moudarir/binga/blob/master/LICENSE) 
 
-PHP library for integration with the Binga.ma API in a fast and simple way.
+PHP library for integration with the Binga.ma API (v1.1) in a fast and simple way.
 
 ## Requirements
 PHP => 7.1.8+  
