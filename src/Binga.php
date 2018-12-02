@@ -35,25 +35,25 @@ class Binga {
     /**
      * Binga constructor.
      *
-     * @param string $baseUri
-     * @param string $username
-     * @param string $password
-     * @param string $storeId
-     * @param string $privateKey
+     * @param string $username recovered from Binga.ma
+     * @param string $password recovered from Binga.ma
+     * @param string $storeId recovered from Binga.ma
+     * @param string $privateKey recovered from Binga.ma
+     * @param string $environment
      */
-    public function __construct ($baseUri, $username, $password, $storeId, $privateKey) {
+    public function __construct ($username, $password, $storeId, $privateKey, $environment = 'dev') {
         $this->username     = $username;
         $this->password     = $password;
         $this->storeId      = $storeId;
         $this->privateKey   = $privateKey;
 
         $this->client       = new Client([
-            'base_uri' => $baseUri
+            'base_uri' => $environment === 'prod' ? Statics::BASE_URI_PROD : Statics::BASE_URI_DEV
         ]);
     }
 
     /**
-     * @param string $method
+     * @param string $method GET | POST
      * @param string $uri
      * @param array $params
      * @return array ['error', 'code', 'message', ?'orders']
@@ -115,17 +115,20 @@ class Binga {
     }
 
     /**
-     * @param int $daysAfterExpiration
+     * setExpirationDate()
+     *
+     * @param int $expireDays
+     * @param string $format
      * @return string|null
      */
-    public function setExpirationDate ($daysAfterExpiration = 7):? string {
+    public function setExpirationDate ($expireDays = 7, $format = 'Y-m-d\TH:i:se'):? string {
         $expiration = null;
         try {
-            $carbon     = new Carbon();
-            $daysNumber = $daysAfterExpiration > 0 ? $daysAfterExpiration : 7;
+            $carbon     = new Carbon(null, Statics::TIMEZONE);
+            $daysNumber = $expireDays > 0 ? $expireDays : 7;
             $expiration = $carbon
                 ->addDays($daysNumber)
-                ->format(\DateTime::ATOM);
+                ->format($format);
         } catch (\Exception $e) {
             //return null;
         }
