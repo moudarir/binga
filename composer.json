@@ -9,6 +9,12 @@
   ],
   "type": "library",
   "license": "MIT",
+  "config": {
+    "platform":{
+      "php": "7.1.8"
+    },
+    "bin-dir": "vendor/bin"
+  },
   "authors": [
     {
       "name": "Abdessamad MOUDARIR",
@@ -20,9 +26,19 @@
     "nesbot/carbon": "^2.6",
     "guzzlehttp/guzzle": "^6.3"
   },
+  "require-dev": {
+    "phpspec/phpspec": "^3.0",
+    "phpunit/phpunit": "^7.0",
+    "ext-xdebug": "*"
+  },
   "autoload": {
     "psr-4": {
       "Moudarir\\Binga\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Moudarir\\Binga\\Test\\": "src/tests"
     }
   },
   "minimum-stability": "dev"
