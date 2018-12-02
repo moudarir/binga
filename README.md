@@ -10,7 +10,7 @@ PHP => 7.1.8+
 Composer
 
 ## Installation
-> **NOTE:** this version 1.0.0 requires php 7.1.8+ ([php supported versions](http://php.net/supported-versions.php))
+> **NOTE:** this version 1.0.* requires php 7.1.8+ ([php supported versions](http://php.net/supported-versions.php))
 
 The best way to install the library is to use [Composer](https://getcomposer.org/)
 
