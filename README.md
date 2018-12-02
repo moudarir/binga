@@ -52,4 +52,5 @@ You're now ready to begin using the library.
 Copyright (c) 2018 Abdessamad MOUDARIR, released under [the MIT License](https://github.com/moudarir/binga/blob/master/LICENSE)
 
 #### TODO
+- Completing Documentation.
 - Adding Some Examples.
