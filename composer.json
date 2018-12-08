@@ -25,7 +25,9 @@
     "php": ">=7.1.8",
     "nesbot/carbon": "^2.6",
     "guzzlehttp/guzzle": "^6.3",
-    "laravie/parser": "^2.0"
+    "laravie/parser": "^2.0",
+    "ext-bcmath": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpspec/phpspec": "^3.0",
