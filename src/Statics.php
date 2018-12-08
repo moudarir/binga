@@ -12,4 +12,13 @@ class Statics {
     const TIMEZONE      = 'GMT';
     const USED_METHODS  = ['GET', 'POST'];
 
+    /**
+     * isEmptyObject()
+     *
+     * @param \stdClass $obj
+     * @return bool
+     */
+    public static function isEmptyObject (\stdClass $obj): bool {
+        return empty((array)$obj);
+    }
 }

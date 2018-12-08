@@ -116,13 +116,11 @@ class Binga {
         try {
             $options    = $this->setOptions($this->username, $this->password, $params);
             $request    = $this->client->request($method, $uri, $options);
-
-            $formatted  = $this->formatContents($request, $params);
-            $content    = $formatted['content'];
-            $response   = $this->checkContent($content);
+            $contents   = $this->formatContents($request, $params);
+            $response   = $this->checkContent($contents);
 
             if (!$response['error']) {
-                $response['orders'] = $content->orders->order;
+                $response['orders'] = $contents->orders->order;
             }
         } catch (GuzzleException $e) {
             $response = [
@@ -142,7 +140,7 @@ class Binga {
      * @param array $data
      * @return string|null
      */
-    private function generateCheckSum ($type, $data):? string {
+    public function generateCheckSum ($type, $data):? string {
         $types = Statics::ORDER_TYPES;
 
         if (isset($types[$type])) {
@@ -199,62 +197,80 @@ class Binga {
      *
      * @param mixed|\Psr\Http\Message\ResponseInterface $request
      * @param array $params
-     * @return array
+     * @return mixed|\stdClass
      */
-    private function formatContents ($request, $params): array {
-        $body   = $request->getBody();
-        $format = $request->getHeader('Content-Type');
+    private function formatContents ($request, $params): \stdClass {
+        $requestBody    = $request->getBody();
+        $requestFormats = $request->getHeader('Content-Type');
+        $format         = 'json';
 
         if (isset($params['stream']) && $params['stream'] === true) {
             $contents = '';
-            while (!$body->eof() ) {
-                $contents .= $body->read(1024);
+            while (!$requestBody->eof() ) {
+                $contents .= $requestBody->read(1024);
             }
-            $body->close();
+            $requestBody->close();
         } else {
-            $contents = $body->getContents();
+            $contents = $requestBody->getContents();
         }
 
-        if (!empty($format)) {
-            if (in_array('application/json', $format)) {
-                return [
-                    'type'      => 'json',
-                    'content'   => json_decode($contents)
-                ];
-            } elseif (in_array('application/xml', $format)) {
-                $parser = new Reader(new Document());
-                $xml    = $parser->extract($contents)->getOriginalContent();
+        if (!empty($requestFormats)) {
+            foreach ($requestFormats as $requestFormat) {
+                switch ($requestFormat) {
+                    case 'application/json':
+                    case 'text/javascript':
+                        $format = 'json';
+                        break;
+                    case 'application/xml':
+                    case 'text/xml':
+                        $format = 'xml';
+                        break;
+                    default:
+                        $format = 'unknown';
+                        break;
+                }
 
-                return [
-                    'type'      => 'xml',
-                    'content'   => $xml
-                ];
+                break;
             }
         }
 
-        return [
-            'type'      => 'Unknown',
-            'content'   => ''
-        ];
+        if ($format === 'json') {
+            $contentsObject = json_decode($contents);
+        } elseif ($format === 'xml') {
+            $parser         = new Reader(new Document());
+            $contentsObject = $parser->extract($contents)->getOriginalContent();
+        } else {
+            $contentsObject = new \stdClass();
+        }
+
+        return $contentsObject;
     }
 
     /**
      * checkContent()
      *
-     * @param object $content
+     * @param mixed|\stdClass $contents
      * @return array
      */
-    private function checkContent ($content): array {
-        $response = ['error' => false];
-        $result = $content->result;
-
-        if ($result === 'error') {
-            $error  = $content->error;
+    private function checkContent ($contents): array {
+        if (Statics::isEmptyObject($contents)) {
             $response = [
-                'error'     => true,
-                'code'      => (int)$error->code,
-                'message'   => $error->message
+                'error'     => false,
+                'code'      => 204,
+                'message'   => 'No Content.'
             ];
+        } else {
+            $response   = ['error' => false];
+            $result     = $contents->result;
+
+            if ($result === 'error') {
+                $error      = $contents->error;
+                $response   = [
+                    'error'     => true,
+                    'code'      => (int)$error->code,
+                    'message'   => $error->message
+                ];
+            }
         }
 
         return $response;
