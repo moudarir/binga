@@ -41,8 +41,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Moudarir\\Binga\\Test\\": "src/tests"
+      "Moudarir\\Binga\\Test\\": "tests/"
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
