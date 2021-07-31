@@ -6,11 +6,11 @@
 PHP library for integration with the Binga.ma API (v1.1) in a fast and simple way.
 
 ## Requirements
-PHP => 7.1.8+  
+PHP => 7.2+  
 Composer
 
 ## Installation
-> **NOTE:** this version 1.0.* requires php 7.1.8+ ([php supported versions](http://php.net/supported-versions.php))
+> **NOTE:** this version 1.0.* requires php 7.2+ ([php supported versions](http://php.net/supported-versions.php))
 
 The best way to install the library is to use [Composer](https://getcomposer.org/)
 
