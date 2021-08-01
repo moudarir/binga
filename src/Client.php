@@ -4,7 +4,6 @@ namespace Moudarir\Binga;
 use GuzzleHttp\Client as CltAlias;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use SimpleXMLElement;
 
 class Client {
 
@@ -81,6 +80,70 @@ class Client {
     }
 
     /**
+     * @param string $accept
+     * @return self
+     */
+    public function setAccept (string $accept = 'json'): self {
+        $this->accept = $accept;
+        return $this;
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getRequest () {
+        return $this->request;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResponse (): array {
+        switch ($this->outputFormat):
+            case 'json':
+            case 'jsonp':
+                $response = json_decode($this->content, true);
+                break;
+            case 'xml':
+                $response = (array)simplexml_load_string($this->content, 'SimpleXMLElement', LIBXML_NOCDATA);
+                break;
+            default:
+                $response = [];
+                break;
+        endswitch;
+
+        return $response;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent (): string {
+        return $this->content;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams (): array {
+        return $this->params;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutputFormat (): string {
+        return $this->outputFormat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccept (): string {
+        return $this->accept;
+    }
+
+    /**
      * @return self
      */
     private function setContent (): self {
@@ -130,70 +193,6 @@ class Client {
         endif;
 
         return $this;
-    }
-
-    /**
-     * @param string $accept
-     * @return self
-     */
-    public function setAccept (string $accept = 'json'): self {
-        $this->accept = $accept;
-        return $this;
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function getRequest () {
-        return $this->request;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getResponse () {
-        switch ($this->outputFormat):
-            case 'json':
-            case 'jsonp':
-                $response = json_decode($this->content, true);
-                break;
-            case 'xml':
-                $response = (array)simplexml_load_string($this->content, 'SimpleXMLElement', LIBXML_NOCDATA);
-                break;
-            default:
-                $response = [];
-                break;
-        endswitch;
-
-        return $response;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent (): string {
-        return $this->content;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParams (): array {
-        return $this->params;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOutputFormat (): string {
-        return $this->outputFormat;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccept (): string {
-        return $this->accept;
     }
 
 }
