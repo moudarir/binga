@@ -1,7 +1,6 @@
 <?php
 namespace Moudarir\Binga;
 
-use Carbon\Carbon;
 use Exception;
 
 class Common {
@@ -22,7 +21,8 @@ class Common {
     public static function formatExpirationDate (int $expireDays = 7, string $format = 'Y-m-d\TH:i:se'): ?string {
         try {
             $daysNumber = $expireDays > 0 ? $expireDays : 7;
-            return (new Carbon(null, Config::TIMEZONE))->addDays($daysNumber)->format($format);
+            $date = new \DateTime('now', new \DateTimeZone(Config::TIMEZONE));
+            return $date->add(new \DateInterval('P'.$daysNumber.'D'))->format($format);
         } catch (Exception $e) {
             return null;
         }
