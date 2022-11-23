@@ -1,34 +1,24 @@
 <?php
 namespace Moudarir\Binga;
 
-use GuzzleHttp\Exception\GuzzleException;
+use Moudarir\Binga\Config\Config;
+use Moudarir\Binga\Helpers\CommonHelper;
+use Moudarir\Binga\Http\BingaTrait;
+use Moudarir\Binga\Http\Request;
 
 class Binga {
 
-    /**
-     * @var Client
-     */
-    private static $client;
+    use BingaTrait;
 
     /**
      * @var string
      */
-    private $username;
+    private $store_id;
 
     /**
      * @var string
      */
-    private $password;
-
-    /**
-     * @var string
-     */
-    private $storeId;
-
-    /**
-     * @var string
-     */
-    private $privateKey;
+    private $private_key;
 
     /**
      * Binga Constructor.
@@ -36,16 +26,13 @@ class Binga {
      * @param array $_config ['username', 'password', 'store_id', 'private_key']
      * @param string $environment
      */
-    public function __construct (array $_config = [], string $environment = 'dev') {
-        $config = is_array($_config) ? array_merge(Config::DEV_CONFIG, $_config) : Config::DEV_CONFIG;
-        $this->username = $config['username'];
-        $this->password = $config['password'];
-        $this->storeId = $config['store_id'];
-        $this->privateKey = $config['private_key'];
+    public function __construct (array $_config = [], string $environment = 'dev')
+    {
+        $config = !empty($_config) ? array_merge(Config::DEV_CONFIG, $_config) : Config::DEV_CONFIG;
+        $this->store_id = $config['store_id'];
+        $this->private_key = $config['private_key'];
 
-        if (!isset(self::$client)):
-            self::$client = new Client($environment === 'prod' ? Config::PROD_ENDPOINT : Config::DEV_ENDPOINT);
-        endif;
+        self::setHttpClient($config, $environment);
     }
 
     /**
@@ -55,126 +42,35 @@ class Binga {
      * @param string $format
      * @return array
      */
-    public function order (string $code, string $format = 'json'): array {
-        try {
-            $params = [
-                'auth' => [$this->username, $this->password],
-            ];
-            self::$client
-                ->setAccept($format)
-                ->setParams($params)
-                ->request('GET', '/bingaApi/api/orders/'.$code);
-            $response = self::$client->getResponse();
-
-            if ($response['result'] === 'success'):
-                return [
-                    'error' => false,
-                    'order' => $response['orders']['order']
-                ];
-            endif;
-
-            return [
-                'error' => true,
-                'code' => (int)$response['error']['code'],
-                'message' => $response['error']['message']
-            ];
-        } catch (GuzzleException $e) {
-            return [
-                'error' => true,
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
-        }
+    public function order (string $code, string $format = 'json'): array
+    {
+        return (new Request(self::getHttpClient()))->get($code, $format);
     }
 
     /**
      * List all of the merchant's orders.
      *
-     * @param array $_params
+     * @param int $limit
+     * @param int $offset
      * @param string $format
      * @return array|array[]
      */
-    public function orders (array $_params = [], string $format = 'json'): array {
-        try {
-            $params = [
-                'auth' => [$this->username, $this->password],
-                'stream' => true
-            ];
-
-            if (array_key_exists('query', $_params)):
-                $params['query'] = $_params['query'];
-            endif;
-
-            self::$client
-                ->setAccept($format)
-                ->setParams($params)
-                ->request('GET', '/bingaApi/api/orders');
-            $response = self::$client->getResponse();
-
-            if ($response['result'] === 'success'):
-                return [
-                    'error' => false,
-                    'orders' => $response['orders']['order']
-                ];
-            endif;
-
-            return [
-                'error' => true,
-                'code' => (int)$response['error']['code'],
-                'message' => $response['error']['message']
-            ];
-        } catch (GuzzleException $e) {
-            return [
-                'error' => true,
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
-        }
+    public function merchantOrders (int $limit = 20, int $offset = 0, string $format = 'json'): array
+    {
+        return (new Request(self::getHttpClient()))->all($limit, $offset, $format);
     }
 
     /**
      * List all store orders.
      *
-     * @param array $_params
+     * @param int $limit
+     * @param int $offset
      * @param string $format
      * @return array|array[]
      */
-    public function storeOrders (array $_params = [], string $format = 'json'): array {
-        try {
-            $params = [
-                'auth' => [$this->username, $this->password],
-                'stream' => true
-            ];
-
-            if (array_key_exists('query', $_params)):
-                $params['query'] = $_params['query'];
-            endif;
-
-            self::$client
-                ->setAccept($format)
-                ->setParams($params)
-                ->request('GET', '/bingaApi/api/orders/store/'.$this->storeId);
-            $response = self::$client->getResponse();
-
-            if ($response['result'] === 'success'):
-                return [
-                    'error' => false,
-                    'orders' => $response['orders']['order']
-                ];
-            endif;
-
-            return [
-                'error' => true,
-                'code' => (int)$response['error']['code'],
-                'message' => $response['error']['message']
-            ];
-        } catch (GuzzleException $e) {
-            return [
-                'error' => true,
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
-        }
+    public function storeOrders (int $limit = 20, int $offset = 0, string $format = 'json'): array
+    {
+        return (new Request(self::getHttpClient()))->store($this->store_id, $limit, $offset, $format);
     }
 
     /**
@@ -184,7 +80,8 @@ class Binga {
      * @param int $expireDays
      * @return array
      */
-    public function pay (array $orderData, string $format = 'json', int $expireDays = 7): array {
+    public function pay (array $orderData, string $format = 'json', int $expireDays = 7): array
+    {
         return $this->charge($orderData, 'pay', $format, $expireDays);
     }
 
@@ -195,24 +92,22 @@ class Binga {
      * @param int $expireDays
      * @return array
      */
-    public function book (array $orderData, string $format = 'json', int $expireDays = 7): array {
+    public function book (array $orderData, string $format = 'json', int $expireDays = 7): array
+    {
         return $this->charge($orderData, 'prepay', $format, $expireDays);
     }
 
     /**
-     * @param string $type
+     * @param string $payment_type
      * @param array $data
-     * @return string|null
+     * @return string
      */
-    public function generateCheckSum (string $type, array $data): ?string {
-        $types = Config::ORDER_TYPES;
-
-        if (array_key_exists($type, $types)):
-            $checkSum = $types[$type].$data['amount'].$this->storeId.$data['externalId'].$data['buyerEmail'].$this->privateKey;
-            return md5($checkSum);
-        endif;
-
-        return null;
+    public function generateCheckSum (string $payment_type, array $data): string
+    {
+        $types = Config::PAYMENT_TYPES;
+        $type = array_key_exists($payment_type, $types) ? $types[$payment_type] : $types['prepay'];
+        $checkSum = $type.$data['amount'].$this->store_id.$data['externalId'].$data['buyerEmail'].$this->private_key;
+        return md5($checkSum);
     }
 
     /**
@@ -224,49 +119,20 @@ class Binga {
      * @param int $expireDays
      * @return array
      */
-    private function charge (array $orderData, string $type = 'prepay', string $format = 'json', int $expireDays = 7): array {
-        try {
-            if (is_float($orderData['amount']) || is_int($orderData['amount'])):
-                $orderData['amount'] = Common::formatAmount($orderData['amount']);
-            endif;
-
-            $uri = $type === 'pay' ? Config::PAY_URI : Config::PREPAY_URI;
-            $data = [
-                'storeId' => $this->storeId,
-                'apiVersion' => Config::API_VERSION,
-                'expirationDate' => Common::formatExpirationDate($expireDays),
-                'orderCheckSum' => $this->generateCheckSum($type, $orderData)
-            ];
-            $formParams = array_merge($data, $orderData);
-            $params = [
-                'auth' => [$this->username, $this->password],
-                'form_params' => $formParams
-            ];
-            self::$client
-                ->setAccept($format)
-                ->setParams($params)
-                ->request('POST', $uri);
-            $response = self::$client->getResponse();
-
-            if ($response['result'] === 'success'):
-                return [
-                    'error' => false,
-                    'order' => $response['orders']['order']
-                ];
-            endif;
-
-            return [
-                'error' => true,
-                'code' => (int)$response['error']['code'],
-                'message' => $response['error']['message']
-            ];
-        } catch (GuzzleException $e) {
-            return [
-                'error' => true,
-                'code' => $e->getCode(),
-                'message' => $e->getMessage()
-            ];
+    private function charge (array $orderData, string $type = 'prepay', string $format = 'json', int $expireDays = 7): array
+    {
+        if (is_float($orderData['amount']) || is_int($orderData['amount'])) {
+            $orderData['amount'] = CommonHelper::formatAmount($orderData['amount']);
         }
+
+        $extra_data = [
+            'storeId' => $this->store_id,
+            'apiVersion' => Config::API_VERSION,
+            'expirationDate' => CommonHelper::formatExpirationDate($expireDays),
+            'orderCheckSum' => $this->generateCheckSum($type, $orderData)
+        ];
+        $data = array_merge($extra_data, $orderData);
+        return (new Request(self::getHttpClient()))->charge($data, $type, $format);
     }
 
 }

@@ -10,7 +10,7 @@ PHP => 7.2+
 Composer
 
 ## Installation
-> **NOTE:** this version 1.0.* requires php 7.2+ ([php supported versions](http://php.net/supported-versions.php))
+> **NOTE:** this version 1.1.* requires php 7.2+ ([php supported versions](http://php.net/supported-versions.php))
 
 The best way to install the library is to use [Composer](https://getcomposer.org/)
 
@@ -20,7 +20,7 @@ In your `composer.json` file located at the root of your project, add the follow
 
     {
         "require": {
-           "moudarir/binga": "^1.0"
+           "moudarir/binga": "^1.1"
         }
     }
 
