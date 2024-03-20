@@ -1,10 +1,9 @@
 <?php
-namespace Moudarir\Binga\Http;
 
-use DateTime;
-use Moudarir\Binga\Helpers\CommonHelper;
+namespace Moudarir\Binga;
 
-class Order {
+class Order
+{
 
     /**
      * @var string
@@ -117,26 +116,24 @@ class Order {
     private $offline;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $creationDate;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $expirationDate;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $modificationDate;
 
     /**
-     * Order constructor.
-     *
      * @param array $data
      */
-    public function __construct (array $data)
+    public function __construct(array $data)
     {
         $this->setData($data);
     }
@@ -144,7 +141,7 @@ class Order {
     /**
      * @return string
      */
-    public function getCode (): string
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -152,7 +149,7 @@ class Order {
     /**
      * @return string
      */
-    public function getExternalId (): string
+    public function getExternalId(): string
     {
         return $this->externalId;
     }
@@ -160,7 +157,7 @@ class Order {
     /**
      * @return string
      */
-    public function getId (): string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -168,7 +165,7 @@ class Order {
     /**
      * @return string
      */
-    public function getStatus (): string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -176,7 +173,7 @@ class Order {
     /**
      * @return string
      */
-    public function getApiVersion (): string
+    public function getApiVersion(): string
     {
         return $this->apiVersion;
     }
@@ -184,7 +181,7 @@ class Order {
     /**
      * @return float
      */
-    public function getAmount (): float
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -192,7 +189,7 @@ class Order {
     /**
      * @return float
      */
-    public function getTotalAmount (): float
+    public function getTotalAmount(): float
     {
         return $this->totalAmount;
     }
@@ -200,7 +197,7 @@ class Order {
     /**
      * @return float
      */
-    public function getStampDuty (): float
+    public function getStampDuty(): float
     {
         return $this->stampDuty;
     }
@@ -208,7 +205,7 @@ class Order {
     /**
      * @return float
      */
-    public function getClientStampDuty (): float
+    public function getClientStampDuty(): float
     {
         return $this->clientStampDuty;
     }
@@ -216,7 +213,7 @@ class Order {
     /**
      * @return float
      */
-    public function getServiceCharge (): float
+    public function getServiceCharge(): float
     {
         return $this->serviceCharge;
     }
@@ -224,7 +221,7 @@ class Order {
     /**
      * @return float
      */
-    public function getClientServiceCharge (): float
+    public function getClientServiceCharge(): float
     {
         return $this->clientServiceCharge;
     }
@@ -232,7 +229,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBookUrl (): string
+    public function getBookUrl(): string
     {
         return $this->bookUrl;
     }
@@ -240,7 +237,7 @@ class Order {
     /**
      * @return string
      */
-    public function getPayUrl (): string
+    public function getPayUrl(): string
     {
         return $this->payUrl;
     }
@@ -248,7 +245,7 @@ class Order {
     /**
      * @return string
      */
-    public function getSuccessUrl (): string
+    public function getSuccessUrl(): string
     {
         return $this->successUrl;
     }
@@ -256,7 +253,7 @@ class Order {
     /**
      * @return string
      */
-    public function getFailureUrl (): string
+    public function getFailureUrl(): string
     {
         return $this->failureUrl;
     }
@@ -264,7 +261,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBuyerAddress (): string
+    public function getBuyerAddress(): string
     {
         return $this->buyerAddress;
     }
@@ -272,7 +269,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBuyerEmail (): string
+    public function getBuyerEmail(): string
     {
         return $this->buyerEmail;
     }
@@ -280,7 +277,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBuyerFirstName (): string
+    public function getBuyerFirstName(): string
     {
         return $this->buyerFirstName;
     }
@@ -288,7 +285,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBuyerLastName (): string
+    public function getBuyerLastName(): string
     {
         return $this->buyerLastName;
     }
@@ -296,7 +293,7 @@ class Order {
     /**
      * @return string
      */
-    public function getBuyerPhone (): string
+    public function getBuyerPhone(): string
     {
         return $this->buyerPhone;
     }
@@ -304,7 +301,7 @@ class Order {
     /**
      * @return bool
      */
-    public function isArchived (): bool
+    public function isArchived(): bool
     {
         return $this->archived;
     }
@@ -312,31 +309,31 @@ class Order {
     /**
      * @return bool
      */
-    public function isOffline (): bool
+    public function isOffline(): bool
     {
         return $this->offline;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getCreationDate (): ?DateTime
+    public function getCreationDate(): ?\DateTime
     {
         return $this->creationDate;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getModificationDate (): ?DateTime
+    public function getModificationDate(): ?\DateTime
     {
         return $this->modificationDate;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getExpirationDate (): ?DateTime
+    public function getExpirationDate(): ?\DateTime
     {
         return $this->expirationDate;
     }
@@ -345,7 +342,7 @@ class Order {
      * @param string $code
      * @return self
      */
-    public function setCode (string $code): self
+    public function setCode(string $code): self
     {
         $this->code = $code;
         return $this;
@@ -355,7 +352,7 @@ class Order {
      * @param string $externalId
      * @return self
      */
-    public function setExternalId (string $externalId): self
+    public function setExternalId(string $externalId): self
     {
         $this->externalId = $externalId;
         return $this;
@@ -365,7 +362,7 @@ class Order {
      * @param string $id
      * @return self
      */
-    public function setId (string $id): self
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
@@ -375,7 +372,7 @@ class Order {
      * @param string $status
      * @return self
      */
-    public function setStatus (string $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
         return $this;
@@ -385,7 +382,7 @@ class Order {
      * @param string $apiVersion
      * @return self
      */
-    public function setApiVersion (string $apiVersion): self
+    public function setApiVersion(string $apiVersion): self
     {
         $this->apiVersion = $apiVersion;
         return $this;
@@ -395,7 +392,7 @@ class Order {
      * @param string $amount
      * @return self
      */
-    public function setAmount (string $amount): self
+    public function setAmount(string $amount): self
     {
         $this->amount = (float)$amount;
         return $this;
@@ -405,7 +402,7 @@ class Order {
      * @param string $totalAmount
      * @return self
      */
-    public function setTotalAmount (string $totalAmount): self
+    public function setTotalAmount(string $totalAmount): self
     {
         $this->totalAmount = (float)$totalAmount;
         return $this;
@@ -415,7 +412,7 @@ class Order {
      * @param string $stampDuty
      * @return self
      */
-    public function setStampDuty (string $stampDuty): self
+    public function setStampDuty(string $stampDuty): self
     {
         $this->stampDuty = (float)$stampDuty;
         return $this;
@@ -425,7 +422,7 @@ class Order {
      * @param string $clientStampDuty
      * @return self
      */
-    public function setClientStampDuty (string $clientStampDuty): self
+    public function setClientStampDuty(string $clientStampDuty): self
     {
         $this->clientStampDuty = (float)$clientStampDuty;
         return $this;
@@ -435,7 +432,7 @@ class Order {
      * @param string $serviceCharge
      * @return self
      */
-    public function setServiceCharge (string $serviceCharge): self
+    public function setServiceCharge(string $serviceCharge): self
     {
         $this->serviceCharge = (float)$serviceCharge;
         return $this;
@@ -445,7 +442,7 @@ class Order {
      * @param string $clientServiceCharge
      * @return self
      */
-    public function setClientServiceCharge (string $clientServiceCharge): self
+    public function setClientServiceCharge(string $clientServiceCharge): self
     {
         $this->clientServiceCharge = (float)$clientServiceCharge;
         return $this;
@@ -455,7 +452,7 @@ class Order {
      * @param string $bookUrl
      * @return self
      */
-    public function setBookUrl (string $bookUrl): self
+    public function setBookUrl(string $bookUrl): self
     {
         $this->bookUrl = $bookUrl;
         return $this;
@@ -465,7 +462,7 @@ class Order {
      * @param string $payUrl
      * @return self
      */
-    public function setPayUrl (string $payUrl): self
+    public function setPayUrl(string $payUrl): self
     {
         $this->payUrl = $payUrl;
         return $this;
@@ -475,7 +472,7 @@ class Order {
      * @param string $successUrl
      * @return self
      */
-    public function setSuccessUrl (string $successUrl): self
+    public function setSuccessUrl(string $successUrl): self
     {
         $this->successUrl = $successUrl;
         return $this;
@@ -485,7 +482,7 @@ class Order {
      * @param string $failureUrl
      * @return self
      */
-    public function setFailureUrl (string $failureUrl): self
+    public function setFailureUrl(string $failureUrl): self
     {
         $this->failureUrl = $failureUrl;
         return $this;
@@ -495,7 +492,7 @@ class Order {
      * @param string $buyerAddress
      * @return self
      */
-    public function setBuyerAddress (string $buyerAddress): self
+    public function setBuyerAddress(string $buyerAddress): self
     {
         $this->buyerAddress = $buyerAddress;
         return $this;
@@ -505,7 +502,7 @@ class Order {
      * @param string $buyerEmail
      * @return self
      */
-    public function setBuyerEmail (string $buyerEmail): self
+    public function setBuyerEmail(string $buyerEmail): self
     {
         $this->buyerEmail = $buyerEmail;
         return $this;
@@ -515,7 +512,7 @@ class Order {
      * @param string $buyerFirstName
      * @return self
      */
-    public function setBuyerFirstName (string $buyerFirstName): self
+    public function setBuyerFirstName(string $buyerFirstName): self
     {
         $this->buyerFirstName = $buyerFirstName;
         return $this;
@@ -525,7 +522,7 @@ class Order {
      * @param string $buyerLastName
      * @return self
      */
-    public function setBuyerLastName (string $buyerLastName): self
+    public function setBuyerLastName(string $buyerLastName): self
     {
         $this->buyerLastName = $buyerLastName;
         return $this;
@@ -535,7 +532,7 @@ class Order {
      * @param string $buyerPhone
      * @return self
      */
-    public function setBuyerPhone (string $buyerPhone): self
+    public function setBuyerPhone(string $buyerPhone): self
     {
         $this->buyerPhone = $buyerPhone;
         return $this;
@@ -545,9 +542,9 @@ class Order {
      * @param string $archived
      * @return self
      */
-    public function setArchived (string $archived): self
+    public function setArchived(string $archived): self
     {
-        $this->archived = $archived === 'true' ? true : false;
+        $this->archived = $archived === 'true';
         return $this;
     }
 
@@ -555,9 +552,9 @@ class Order {
      * @param string $offline
      * @return self
      */
-    public function setOffline (string $offline): self
+    public function setOffline(string $offline): self
     {
-        $this->offline = $offline === 'true' ? true : false;
+        $this->offline = $offline === 'true';
         return $this;
     }
 
@@ -565,9 +562,9 @@ class Order {
      * @param string $creationDate
      * @return self
      */
-    public function setCreationDate (string $creationDate): self
+    public function setCreationDate(string $creationDate): self
     {
-        $this->creationDate = CommonHelper::toDatetime($creationDate);
+        $this->creationDate = Utils::toDatetime($creationDate);
         return $this;
     }
 
@@ -575,9 +572,9 @@ class Order {
      * @param string $modificationDate
      * @return self
      */
-    public function setModificationDate (string $modificationDate): self
+    public function setModificationDate(string $modificationDate): self
     {
-        $this->modificationDate = CommonHelper::toDatetime($modificationDate);
+        $this->modificationDate = Utils::toDatetime($modificationDate);
         return $this;
     }
 
@@ -585,97 +582,24 @@ class Order {
      * @param string $expirationDate
      * @return self
      */
-    public function setExpirationDate (string $expirationDate): self
+    public function setExpirationDate(string $expirationDate): self
     {
-        $this->expirationDate = CommonHelper::toDatetime($expirationDate);
+        $this->expirationDate = Utils::toDatetime($expirationDate);
         return $this;
     }
 
     /**
      * @param array $data
-     * @return $this
+     * @return void
      */
-    private function setData (array $data): self
+    private function setData(array $data): void
     {
         if (!empty($data)) {
-            if (array_key_exists('code', $data)) {
-                $this->setCode($data['code']);
-            }
-            if (array_key_exists('externalId', $data)) {
-                $this->setExternalId($data['externalId']);
-            }
-            if (array_key_exists('id', $data)) {
-                $this->setId($data['id']);
-            }
-            if (array_key_exists('status', $data)) {
-                $this->setStatus($data['status']);
-            }
-            if (array_key_exists('apiVersion', $data)) {
-                $this->setApiVersion($data['apiVersion']);
-            }
-            if (array_key_exists('amount', $data)) {
-                $this->setAmount($data['amount']);
-            }
-            if (array_key_exists('totalAmount', $data)) {
-                $this->setTotalAmount($data['totalAmount']);
-            }
-            if (array_key_exists('stampDuty', $data)) {
-                $this->setStampDuty($data['stampDuty']);
-            }
-            if (array_key_exists('clientStampDuty', $data)) {
-                $this->setClientStampDuty($data['clientStampDuty']);
-            }
-            if (array_key_exists('serviceCharge', $data)) {
-                $this->setServiceCharge($data['serviceCharge']);
-            }
-            if (array_key_exists('clientServiceCharge', $data)) {
-                $this->setClientServiceCharge($data['clientServiceCharge']);
-            }
-            if (array_key_exists('bookUrl', $data)) {
-                $this->setBookUrl($data['bookUrl']);
-            }
-            if (array_key_exists('payUrl', $data)) {
-                $this->setPayUrl($data['payUrl']);
-            }
-            if (array_key_exists('successUrl', $data)) {
-                $this->setSuccessUrl($data['successUrl']);
-            }
-            if (array_key_exists('failureUrl', $data)) {
-                $this->setFailureUrl($data['failureUrl']);
-            }
-            if (array_key_exists('buyerAddress', $data)) {
-                $this->setBuyerAddress($data['buyerAddress']);
-            }
-            if (array_key_exists('buyerEmail', $data)) {
-                $this->setBuyerEmail($data['buyerEmail']);
-            }
-            if (array_key_exists('buyerFirstName', $data)) {
-                $this->setBuyerFirstName($data['buyerFirstName']);
-            }
-            if (array_key_exists('buyerLastName', $data)) {
-                $this->setBuyerLastName($data['buyerLastName']);
-            }
-            if (array_key_exists('buyerPhone', $data)) {
-                $this->setBuyerPhone($data['buyerPhone']);
-            }
-            if (array_key_exists('archived', $data)) {
-                $this->setArchived($data['archived']);
-            }
-            if (array_key_exists('offline', $data)) {
-                $this->setOffline($data['offline']);
-            }
-            if (array_key_exists('creationDate', $data)) {
-                $this->setCreationDate($data['creationDate']);
-            }
-            if (array_key_exists('modificationDate', $data)) {
-                $this->setModificationDate($data['modificationDate']);
-            }
-            if (array_key_exists('expirationDate', $data)) {
-                $this->setExpirationDate($data['expirationDate']);
+            foreach ($data as $property => $value) {
+                if (\property_exists($this, $property) && \method_exists($this, $property)) {
+                    $this->$property($value);
+                }
             }
         }
-
-        return $this;
     }
-
 }

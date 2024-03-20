@@ -1,11 +1,10 @@
 <?php
-namespace Moudarir\Binga\Config;
 
-class Config {
+namespace Moudarir\Binga;
 
-    /**
-     * Binga API Version
-     */
+class Config
+{
+
     const API_VERSION = '1.1';
     const PROD_ENDPOINT = 'https://api.binga.ma';
     const DEV_ENDPOINT = 'http://preprod.binga.ma';
@@ -23,19 +22,11 @@ class Config {
     const PAYMENT_TYPES = ['pay' => "PAY", 'prepay' => "PRE-PAY"];
     const TIMEZONE = 'GMT';
     const DEFAULT_ACCEPTED_FORMAT = 'json';
-
-    /**
-     * 'Accept' Formats
-     */
     const ACCEPTED_FORMATS = [
         'json' => 'application/json',
         'jsonp' => 'application/javascript',
         'xml' => 'application/xml'
     ];
-
-    /**
-     * HTTP Status Codes
-     */
     const STATUS_CODES = [
         100	=> 'Continue',
         101	=> 'Switching Protocols',
@@ -52,7 +43,7 @@ class Config {
         301	=> 'Moved Permanently',
         302	=> 'Found',
         303	=> 'See Other',
-        304	=> 'Pas de changement effectué.',
+        304	=> 'No change made.',
         305	=> 'Use Proxy',
         307	=> 'Temporary Redirect',
 
@@ -88,5 +79,4 @@ class Config {
         505	=> 'HTTP Version Not Supported',
         511	=> 'Network Authentication Required'
     ];
-
 }
